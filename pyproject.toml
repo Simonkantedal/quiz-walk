@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "quiz-walk"
+version = "0.1.0"
+description = ""
+authors = ["Simon Kantedal <simon.kantedal@astrazeneca.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.110.0"
+gunicorn = "^21.2.0"
+uvicorn = "^0.28.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
