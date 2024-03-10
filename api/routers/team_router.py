@@ -33,3 +33,38 @@ def get_team(team_id: int, db: Session = Depends(get_db)):
     if db_team is None:
         raise HTTPException(status_code=404, detail="Team not found")
     return db_team
+
+
+@router.delete("/teams/")
+def remove_all_teams(db: Session = Depends(get_db)):
+    """
+    Endpoint to remove all teams.
+    """
+    try:
+        db.query(models.QuizTeam).delete()
+        db.commit()
+        return {"message": "All teams removed successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/teams/{team_id}")
+def remove_team(team_id: int, db: Session = Depends(get_db)):
+    """
+    Endpoint to remove a single team by its ID.
+    """
+    try:
+        query = db.query(models.QuizTeam).filter(models.QuizTeam.id == team_id)
+        db_team = query.first()
+        if db_team is None:
+            raise HTTPException(status_code=404, detail="Team not found")
+
+        query.delete()
+        db.commit()
+        return {"message": f"Team with ID {team_id} removed successfully"}
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))

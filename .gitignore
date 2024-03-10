@@ -1,4 +1,8 @@
 # PyCharm files
 .idea/
 
-app/__pycache__/
+__pycache__/
+
+
+# Database files
+quiz_walk.db

@@ -38,3 +38,42 @@ def read_question(question_id: int, db: Session = Depends(get_db)):
     if db_question is None:
         raise HTTPException(status_code=404, detail="Question not found")
     return db_question
+
+
+@router.delete("/questions/")
+def remove_all_questions(db: Session = Depends(get_db)):
+    """
+    Endpoint to remove all questions.
+    """
+    try:
+        # Delete all questions
+        db.query(models.Question).delete()
+        db.commit()  # Commit changes
+        return {"message": "All questions removed successfully"}
+    except Exception as e:
+        db.rollback()  # Rollback in case of error
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/questions/{question_id}")
+def remove_question(question_id: int, db: Session = Depends(get_db)):
+    """
+    Endpoint to remove a single question by its ID.
+    """
+    try:
+        # Find the question by ID
+        query = db.query(models.Question).filter(models.Question.id == question_id)
+        db_question = query.first()
+
+        if db_question is None:
+            raise HTTPException(status_code=404, detail="Question not found")
+
+        # Remove the question
+        query.delete()
+        db.commit()  # Commit changes
+        return {"message": f"Question with ID {question_id} removed successfully"}
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        db.rollback()  # Rollback in case of error
+        raise HTTPException(status_code=500, detail=str(e))
