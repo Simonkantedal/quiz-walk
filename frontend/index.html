@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Walk</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Team Creation Section -->
+        <div v-if="!teamCreated" class="team-section">
+            <h2>Skapa ditt lag</h2>
+            <form @submit.prevent="createTeam">
+                <input type="text" v-model="teamName" placeholder="Ange lagnamn" required>
+                <button type="submit">Skapa lag</button>
+            </form>
+        </div>
+
+        <!-- Questions Section -->
+        <div v-if="teamCreated && !quizFinished">
+            <h2>{{ currentQuestionText }}</h2>
+            <form @submit.prevent="submitResponse">
+                <input type="text" v-model="userResponse" placeholder="Your answer" required>
+                <button type="submit">Svara</button>
+            </form>
+        </div>
+
+        <!-- Quiz Finished Section -->
+        <div v-if="quizFinished">
+            <h2>Quiz Completed!</h2>
+            <p>Thank you for participating in the quiz. Your responses have been recorded.</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="script.js"></script>
+</body>
+</html>
