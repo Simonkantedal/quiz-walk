@@ -1,8 +1,15 @@
 from fastapi import Depends, APIRouter, HTTPException
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from api.database import get_db
 from api.models import UserResponse
+
+
+class ResponseModel(BaseModel):
+    question_id: int
+    user_id: str
+    user_answer: str
 
 
 router = APIRouter(
@@ -13,16 +20,24 @@ router = APIRouter(
 
 
 @router.post("/responses/")
-def submit_response(
-    question_id: int, user_id: str, user_answer: str, db: Session = Depends(get_db)
-):
+def submit_response(response_data: ResponseModel, db: Session = Depends(get_db)):
     db_response = UserResponse(
-        question_id=question_id, user_id=user_id, user_answer=user_answer
+        question_id=response_data.question_id,
+        user_id=response_data.user_id,
+        user_answer=response_data.user_answer,
     )
     db.add(db_response)
     db.commit()
     db.refresh(db_response)
     return db_response
+
+
+@router.get("/responses/")
+def get_all_responses(db: Session = Depends(get_db)):
+    """
+    Endpoint to get all user responses.
+    """
+    return db.query(UserResponse).all()
 
 
 @router.delete("/responses/")

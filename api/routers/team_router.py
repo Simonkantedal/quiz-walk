@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 
-@router.post("/questions/")
+@router.post("/teams/")
 def create_team(team_name: str, db: Session = Depends(get_db)):
     db_team = models.QuizTeam(team_name=team_name)
     db.add(db_team)
@@ -21,13 +21,13 @@ def create_team(team_name: str, db: Session = Depends(get_db)):
     return db_team
 
 
-@router.get("/questions/")
+@router.get("/teams/")
 def get_teams(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     teams = db.query(models.QuizTeam).offset(skip).limit(limit).all()
     return teams
 
 
-@router.get("/questions/{team_id}")
+@router.get("/teams/{team_id}")
 def get_team(team_id: int, db: Session = Depends(get_db)):
     db_team = db.query(models.QuizTeam).filter(models.QuizTeam.id == team_id).first()
     if db_team is None:
